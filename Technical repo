@@ -1,0 +1,109 @@
+1. Introduction
+Human gait and posture recognition is a key component in wearable health monitoring,
+rehabilitation systems, and activity tracking applications. With the growth of embedded
+AI, it is now possible to perform such recognition directly on low-power microcontrollers
+using TinyML techniques.
+
+This project aims to design and implement a wearable embedded gait recognition system
+that performs real-time classification using IMU data and on-device inference
+on an STM32 Blue Pill microcontroller.
+
+
+2. System Overview
+
+The system consists of an IMU sensor, STM32 microcontroller, battery with BMS,
+and LoRa communication. IMU signals are sampled, windowed, and processed to extract
+compact features. A TinyML-compatible model then classifies motion states locally.
+
+Due to hardware unavailability, the system is demonstrated using an offline IMU dataset,
+while ensuring full compatibility with STM32 constraints.
+
+
+3. Signal Acquisition & Processing
+
+The UCI HAR dataset provides accelerometer and gyroscope signals sampled at 50 Hz.
+Only the accelerometer X-axis signal is used to simulate minimal sensor usage.
+
+Windowing Strategy
+
+Window size: 128 samples
+
+Window overlap: 64 samples (50%)
+
+This balances temporal resolution and computational cost.
+
+Feature Extraction
+
+For each window, the following time-domain features are extracted:
+
+Mean
+
+Standard deviation
+
+These features are computationally inexpensive and robust to noise,
+making them suitable for embedded systems.
+
+
+4. Machine Learning Model Selection
+
+A Decision Tree classifier is selected due to:
+
+Small model size
+
+Low inference latency
+
+No need for floating-point heavy operations
+
+Easy conversion to embedded C code
+
+The model is trained offline and evaluated using labeled IMU data.
+
+Performance
+
+Achieved accuracy: ~46%
+
+Accuracy is limited due to:
+
+Single-axis input
+
+Minimal feature set
+
+Subject variability
+
+5. STM32 Embedded Constraints
+
+The STM32F103C8 has limited RAM and flash memory.
+The chosen feature set and model ensure:
+
+Minimal memory usage
+
+Deterministic inference timing
+
+Compatibility with real-time execution
+
+Floating-point operations can be replaced with fixed-point arithmetic if required.
+
+6. Power and Battery Management
+
+The system is designed to operate on a 3.7V Li-Po battery.
+A TP4056 charging and protection module ensures:
+
+Over-voltage protection
+
+Under-voltage cutoff
+
+Over-current protection
+
+STM32 low-power sleep modes reduce power consumption during idle periods.
+
+7. Results and Discussion
+
+The implemented system successfully demonstrates a complete TinyML pipeline
+from signal acquisition to classification. Although accuracy is moderate,
+the design prioritizes embedded feasibility over model complexity.
+
+8. Conclusion
+
+This project validates the feasibility of implementing gait and posture recognition
+on a resource-constrained microcontroller using TinyML techniques. The system design
+meets all assignment constraints and provides a strong foundation for real hardware deployment.
